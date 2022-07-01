@@ -8,6 +8,7 @@ const port = 3001;
 
 app.use(express.json());
 app.use('/api/auth', require('./Routes/auth'))
+app.use('/api/notes', require('./Routes/notes'))
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
