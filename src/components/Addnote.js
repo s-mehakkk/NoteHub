@@ -18,7 +18,7 @@ const Addnote = () => {
     }
 
     return (
-        <div className='container my-3 border rounded'>
+        <div className='container my-3 border rounded containerColour'>
             <h3 className='my-3'>Add a new note</h3>
             <hr />
             <form id='addNoteForm' onSubmit={addNoteHandler}>
@@ -30,7 +30,7 @@ const Addnote = () => {
                     <label htmlFor="description" className="form-label">Description</label>
                     <input type="text" name="description" className="form-control" id="description" onChange={onChange} minLength={5} required/>
                 </div>
-                <button type="submit" className="btn btn-primary mb-3 ">Add Note</button>
+                <button type="submit" className="btn btnColour mb-3 ">Add Note</button>
             </form>
         </div>
     )

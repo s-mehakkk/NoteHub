@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import noteContext from '../context/notes/noteContext'
 import NoteItem from './NoteItem';
 
@@ -7,9 +8,16 @@ const Notes = () => {
     const context = useContext(noteContext);
     const { notes, fetchNotes, editNote } = context;
     const [note, setnote] = useState({id:"",etitle :"", edescription: ""})
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if(localStorage.getItem('token')){
         fetchNotes();
+        }
+        else{
+            navigate('/login');
+        }
+
         // eslint-disable-next-line
     }, [])
     const modalBtn = useRef(null);
@@ -31,9 +39,9 @@ const Notes = () => {
     }
 
     return (
-        <div className="container my-3 border rounded">
+        <div className="container containerColour my-3 border rounded">
             {/* <!-- Button trigger modal --> */}
-            <button type="button" ref={modalBtn} className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" ref={modalBtn} className="btn btnColour d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Launch demo modal
             </button>
 
@@ -58,8 +66,8 @@ const Notes = () => {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" id='modalCloseBtn' className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary " onClick={clickHandler} >Save changes</button>
+                            <button type="button" id='modalCloseBtn' className="btn btnColour" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btnColour " onClick={clickHandler} >Save changes</button>
                         </div>
                     </div>
                 </div>

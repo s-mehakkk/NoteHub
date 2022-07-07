@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.containerColour{
+  background-color: #DCD7C9;
+  color:#2C3639;
+  /* color: #142850;
+  color: #27496D;
+  color: #0C7B93;
+  color: #00A8CC; */
+
+}
+.noteColour{
+  background-color: #c7bfa9;
+  color:#2C3639;
+}
+
+.navColour{
+  background-color: #2C3639;
+  color: bisque;
+  font-weight: bold;
+}
+
+.btnColour{
+  background-color:#A27B5C ;
+  color: azure;
+}
