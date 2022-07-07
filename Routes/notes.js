@@ -10,7 +10,7 @@ const router = express.Router()
 router.post('/addnote', fetchUser, [
     body('title').isLength({ min: 3 }),
     body('description').isLength({ min: 5 }),
-], async (req, res)=>{
+], async (req, res) => {
     //checking for errors in validation strings
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -20,7 +20,7 @@ router.post('/addnote', fetchUser, [
 
     try {
         let newNote = await Notes.create({
-            user:req.user.id,
+            user: req.user.id,
             title: req.body.title,
             description: req.body.description,
         })
@@ -32,10 +32,10 @@ router.post('/addnote', fetchUser, [
 })
 
 //Route 2 Fetch all notes for a user
-router.get('/fetchnotes', fetchUser, async(req, res)=>{
+router.get('/fetchnotes', fetchUser, async (req, res) => {
     try {
         const userId = req.user.id;
-        const notes = await Notes.find({'user': userId});
+        const notes = await Notes.find({ 'user': userId });
         res.json(notes);
     } catch (error) {
         res.status(500).json({ "err": "some error occured" });
@@ -44,22 +44,22 @@ router.get('/fetchnotes', fetchUser, async(req, res)=>{
 })
 
 //ROUTE 3 update an existing note
-router.put('/updatenote/:id', fetchUser, async(req, res)=>{
+router.put('/updatenote/:id', fetchUser, async (req, res) => {
     try {
-        let {title, description} = req.body;
-        let newNote ={};
-        if(title){newNote.title = title};
-        if(description){newNote.description = description};
+        let { title, description } = req.body;
+        let newNote = {};
+        if (title) { newNote.title = title };
+        if (description) { newNote.description = description };
 
         let note = await Notes.findById(req.params.id);
-        if(!note){
+        if (!note) {
             return res.status(404).send("Can't update");
         }
-        if(note.user.toString() !== req.user.id ){
+        if (note.user.toString() !== req.user.id) {
             return res.status(401).send("Not allowed")
         }
 
-        note = await Notes.findByIdAndUpdate(req.params.id, {$set : newNote}, {new:true});
+        note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true });
         res.json(note);
 
     } catch (error) {
@@ -69,19 +69,19 @@ router.put('/updatenote/:id', fetchUser, async(req, res)=>{
 })
 
 //ROUTE 4 delete an existing note
-router.delete('/deletenote/:id', fetchUser, async(req,res)=>{
+router.delete('/deletenote/:id', fetchUser, async (req, res) => {
     try {
 
         let note = await Notes.findById(req.params.id);
-        if(!note){
+        if (!note) {
             return res.status(404).send("Not allowed");
         }
-        if(note.user.toString() !== req.user.id ){
+        if (note.user.toString() !== req.user.id) {
             return res.status(401).send("Not allowed")
         }
 
         note = await Notes.findByIdAndDelete(req.params.id);
-        res.json({"status":"successfully deleted"});
+        res.json({ "status": "successfully deleted" });
     } catch (error) {
         res.status(500).json({ "err": "some error occured" });
         console.log(error.message);

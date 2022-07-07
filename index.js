@@ -5,15 +5,15 @@ var cors = require('cors');
 connectToMongo();
 
 const app = express();
-app.use(cors())
 const port = 3001;
 
+app.use(cors()) // to allow api calls from frontend(same browser somethin somethin)
 app.use(express.json());
 app.use('/api/auth', require('./Routes/auth'))
 app.use('/api/notes', require('./Routes/notes'))
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('iNotebook backend')
 })
 
 app.listen(port, () => {

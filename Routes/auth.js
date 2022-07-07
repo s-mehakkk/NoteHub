@@ -14,22 +14,21 @@ router.post('/signup', [
     body('email').isEmail(),
     body('password').isLength({ min: 5 }),
 ], async (req, res) => {
+    let success = false;
     //checking for the above constraints name length>=3 ....
     // i.e. errors in validation strings
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-
+        return res.status(400).json({ success, errors: errors.array() });
     }
     try {
         //checking if an user with this mail already exists
         let user = await User.findOne({ email: req.body.email })
         if (user) {
-            return res.json({ "err": "A user with this email already exists" })
+            return res.json({ success, "err": "An account with this email already exists, pls sign-in" })
         }
         //if it doesnt - creating a new user
         else {
-
             const salt = await bcrypt.genSalt(10);
             const secPass = bcrypt.hashSync(req.body.password, salt);
             user = await User.create({
@@ -43,7 +42,8 @@ router.post('/signup', [
                 }
             };
             const authToken = jswt.sign(data, secretKey);
-            res.json(authToken);
+            success = true;
+            res.json(success, authToken);
 
             //res.json(user);
         }
@@ -53,7 +53,7 @@ router.post('/signup', [
         // user.save()
         // res.status(200).send('user added');
     } catch (error) {
-        res.status(500).json({ "err": "some error occured" });
+        res.status(500).json({ success, "err": "some error occured" });
         console.log(error.message);
     }
 
@@ -64,23 +64,23 @@ router.post('/signin', [
     body('email', 'Enter a valid email address').isEmail(),
     body('password', "Password can't be blank").exists(),
 ], async (req, res) => {
-
+    let success = false;
     try {
         const { email, password } = req.body;
         //checking for the above constraints name length>=3 ....
         // i.e. errors in validation strings
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({success, errors: errors.array() });
         }
         //checking if an user with this mail exists or not
         let user = await User.findOne({ email: req.body.email })
         if (!user) {
-            return res.status(400).json({ "err": "Sedlyf you'll be doomed in 10 seconds" })
+            return res.status(400).json({success, "err": "Provide valid credentials. If you do-not have an account, pls sign-up" })
         }
         const passCompare = await bcrypt.compare(password, user.password);
         if (!passCompare) {
-            return res.status(400).json({ "err": "Sedlyf you'll be doomed in 10 seconds" })
+            return res.status(400).json({success, "err": "Provide valid credentials. If you do-not have an account, pls sign-up" })
         }
 
         const data = {
@@ -89,27 +89,30 @@ router.post('/signin', [
             }
         };
         const authToken = jswt.sign(data, secretKey);
-        res.json(authToken);
+        success = true;
+        res.json(success, authToken);
 
 
     }
 
     catch (error) {
         console.log(error.message);
-        res.status(500).json({ "err": "some error occured"});
+        res.status(500).json({success, "err": "some error occured" });
     }
 })
 
 //ROUTE 3
-router.get('/getUser', fetchUser, async(req, res)=>{
-try {
-    const userId = req.user.id;
-    const user = await User.findOne({_id: userId}).select("-password")
-    res.json(user);
-} catch (error) {
-    console.log(error.message);
-    res.status(500).json({ "err": "some error occured"});
-}
+router.get('/getUser', fetchUser, async (req, res) => {
+    let success = false;
+    try {
+        const userId = req.user.id;
+        const user = await User.findOne({ _id: userId }).select("-password");
+        success = true;
+        res.json(success, user);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({success, "err": "some error occured" });
+    }
 })
 
 module.exports = router;
