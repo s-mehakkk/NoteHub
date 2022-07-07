@@ -1,9 +1,11 @@
 const express = require("express");
 const connectToMongo = require('./db');
+var cors = require('cors');
 
 connectToMongo();
 
 const app = express();
+app.use(cors())
 const port = 3001;
 
 app.use(express.json());
@@ -15,5 +17,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`iBackend listening on port ${port}`)
 })
