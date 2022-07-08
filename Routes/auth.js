@@ -19,13 +19,13 @@ router.post('/signup', [
     // i.e. errors in validation strings
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, errors: errors.array() });
+        return res.status(400).json({ success, error: errors.array() });
     }
     try {
         //checking if an user with this mail already exists
         let user = await User.findOne({ email: req.body.email })
         if (user) {
-            return res.json({ success, "err": "An account with this email already exists, pls sign-in" })
+            return res.json({ success, error: "An account with this email already exists, pls sign-in" })
         }
         //if it doesnt - creating a new user
         else {
@@ -43,7 +43,7 @@ router.post('/signup', [
             };
             const authToken = jswt.sign(data, secretKey);
             success = true;
-            res.json(success, authToken);
+            res.json({success, authToken});
 
             //res.json(user);
         }
@@ -53,7 +53,7 @@ router.post('/signup', [
         // user.save()
         // res.status(200).send('user added');
     } catch (error) {
-        res.status(500).json({ success, "err": "some error occured" });
+        res.status(500).json({ success, error: "some error occured" });
         console.log(error.message);
     }
 
@@ -71,16 +71,16 @@ router.post('/signin', [
         // i.e. errors in validation strings
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({success, errors: errors.array() });
+            return res.status(400).json({success, error: errors.array() });
         }
         //checking if an user with this mail exists or not
         let user = await User.findOne({ email: req.body.email })
         if (!user) {
-            return res.status(400).json({success, "err": "Provide valid credentials. If you do-not have an account, pls sign-up" })
+            return res.status(400).json({success, error: "Provide valid credentials. If you do-not have an account, pls sign-up" })
         }
         const passCompare = await bcrypt.compare(password, user.password);
         if (!passCompare) {
-            return res.status(400).json({success, "err": "Provide valid credentials. If you do-not have an account, pls sign-up" })
+            return res.status(400).json({success, error: "Provide valid credentials. If you do-not have an account, pls sign-up" })
         }
 
         const data = {
@@ -90,14 +90,14 @@ router.post('/signin', [
         };
         const authToken = jswt.sign(data, secretKey);
         success = true;
-        res.json(success, authToken);
+        res.status(200).json({success, authToken});
 
 
     }
 
     catch (error) {
         console.log(error.message);
-        res.status(500).json({success, "err": "some error occured" });
+        res.status(500).json({success, error: "some error occured" });
     }
 })
 
@@ -108,10 +108,10 @@ router.get('/getUser', fetchUser, async (req, res) => {
         const userId = req.user.id;
         const user = await User.findOne({ _id: userId }).select("-password");
         success = true;
-        res.json(success, user);
+        res.json({success, user});
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({success, "err": "some error occured" });
+        res.status(500).json({success, error: "some error occured" });
     }
 })
 

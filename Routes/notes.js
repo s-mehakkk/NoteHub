@@ -14,8 +14,7 @@ router.post('/addnote', fetchUser, [
     //checking for errors in validation strings
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(req.body)
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ error: errors.array() });
     }
 
     try {
@@ -26,7 +25,7 @@ router.post('/addnote', fetchUser, [
         })
         res.status(200).json(newNote);
     } catch (error) {
-        res.status(500).json({ "err": "some error occured" });
+        res.status(500).json({ error: "some error occured" });
         console.log(error.message);
     }
 })
@@ -38,7 +37,7 @@ router.get('/fetchnotes', fetchUser, async (req, res) => {
         const notes = await Notes.find({ 'user': userId });
         res.json(notes);
     } catch (error) {
-        res.status(500).json({ "err": "some error occured" });
+        res.status(500).json({ error: "some error occured" });
         console.log(error.message);
     }
 })
@@ -53,17 +52,17 @@ router.put('/updatenote/:id', fetchUser, async (req, res) => {
 
         let note = await Notes.findById(req.params.id);
         if (!note) {
-            return res.status(404).send("Can't update");
+            return res.status(404).json({error: "Can't update"});
         }
         if (note.user.toString() !== req.user.id) {
-            return res.status(401).send("Not allowed")
+            return res.status(401).json({error: "Not allowed"})
         }
 
         note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true });
         res.json(note);
 
     } catch (error) {
-        res.status(500).json({ "err": "some error occured" });
+        res.status(500).json({ error: "some error occured" });
         console.log(error.message);
     }
 })
@@ -74,16 +73,16 @@ router.delete('/deletenote/:id', fetchUser, async (req, res) => {
 
         let note = await Notes.findById(req.params.id);
         if (!note) {
-            return res.status(404).send("Not allowed");
+            return res.status(404).json({error: "Not allowed"})
         }
         if (note.user.toString() !== req.user.id) {
-            return res.status(401).send("Not allowed")
+            return res.status(401).json({error: "Not allowed"})
         }
 
         note = await Notes.findByIdAndDelete(req.params.id);
         res.json({ "status": "successfully deleted" });
     } catch (error) {
-        res.status(500).json({ "err": "some error occured" });
+        res.status(500).json({ error: "some error occured" });
         console.log(error.message);
     }
 })
