@@ -1,10 +1,12 @@
 import React, {useContext, useState} from 'react'
+import alertContext from '../context/alert/alertContext';
 import noteContext from '../context/notes/noteContext'
-
 
 const Addnote = () => {
     const context = useContext(noteContext);
     const {addNote} = context;
+    const aContext = useContext(alertContext);
+    const {displayAlert} = aContext;
     const [newNote, setnewNote] = useState({title :" ", description: ""})
 
     const onChange = (e)=>{
@@ -14,11 +16,12 @@ const Addnote = () => {
         e.preventDefault();
         addNote(newNote.title, newNote.description)
         const form = document.getElementById('addNoteForm');
+        displayAlert('success', 'Note added successfully!');
         form.reset();
     }
 
     return (
-        <div className='container my-3 border rounded containerColour'>
+        <div className='container border rounded containerColour'>
             <h3 className='my-3'>Add a new note</h3>
             <hr />
             <form id='addNoteForm' onSubmit={addNoteHandler}>
@@ -30,7 +33,7 @@ const Addnote = () => {
                     <label htmlFor="description" className="form-label">Description</label>
                     <input type="text" name="description" className="form-control" id="description" onChange={onChange} minLength={5} required/>
                 </div>
-                <button type="submit" className="btn btnColour mb-3 ">Add Note</button>
+                <button type="submit" className="btn btnColour mb-3">Add Note</button>
             </form>
         </div>
     )

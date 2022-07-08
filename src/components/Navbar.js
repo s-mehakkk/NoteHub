@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import alertContext from '../context/alert/alertContext';
 
 export const Navbar = () => {
 
@@ -7,9 +8,13 @@ export const Navbar = () => {
     let location = useLocation();
     const navigate = useNavigate();
 
+    const aContext = useContext(alertContext);
+    const {displayAlert} = aContext;
+
     const handleLogout= ()=>{
         localStorage.removeItem('token');
         navigate('/login');
+        displayAlert('success', 'Logged-out successfully');
     }
 
     return (

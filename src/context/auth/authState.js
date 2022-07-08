@@ -1,10 +1,16 @@
-import AuthContext from './authContext'
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from './authContext'
+import alertContext from '../alert/alertContext';
 
 const AuthState = (props) => {
+    const aContext = useContext(alertContext);
+    const {displayAlert} = aContext;
+
     const host = "http://localhost:3001";
     let navigate = useNavigate();
 
+    // Login 
     const login = async (email, password) => {
         const url = `${host}/api/auth/signin`;
         const response = await fetch(url, {
@@ -18,12 +24,15 @@ const AuthState = (props) => {
         if (json.success) {
             localStorage.setItem('token', json.authToken);
             navigate('/');
+            displayAlert('success', 'Log-in successful');
+
         }
         else {
-            alert(json.error);
+            displayAlert('danger', json.error)
         }
     }
 
+    //Signup
     const signup = async (name, email, password) => {
         const url = `${host}/api/auth/signup`;
         const response = await fetch(url, {
@@ -37,9 +46,10 @@ const AuthState = (props) => {
         if (json.success) {
             localStorage.setItem('token', json.authToken);
             navigate('/');
+            displayAlert('success', 'Sign-up successful');
         }
         else {
-            alert(json.error);
+            displayAlert('danger', json.error);
         }
     }
 

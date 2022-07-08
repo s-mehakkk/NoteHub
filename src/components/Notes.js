@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import noteContext from '../context/notes/noteContext'
+import alertContext from '../context/alert/alertContext';
 import NoteItem from './NoteItem';
 
 
 const Notes = () => {
     const context = useContext(noteContext);
     const { notes, fetchNotes, editNote } = context;
+    const aContext = useContext(alertContext);
+    const {displayAlert} = aContext;
     const [note, setnote] = useState({id:"",etitle :"", edescription: ""})
     const navigate = useNavigate();
 
@@ -25,16 +28,15 @@ const Notes = () => {
     const editHandler = (currentNote) => {
         modalBtn.current.click();
         setnote({id: currentNote._id, etitle :currentNote.title, edescription :currentNote.description});
-        console.log(currentNote)
     }
     const onChange = (e)=>{
         setnote({...note, [e.target.name]: e.target.value})
     }
     const clickHandler = (e)=>{
         e.preventDefault();
-        console.log(note);
         const closeBtn = document.getElementById('modalCloseBtn');
         closeBtn.click();
+        displayAlert('success', 'Note edited')
         editNote(note.id, note.etitle, note.edescription);
     }
 
