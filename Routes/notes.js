@@ -35,7 +35,7 @@ router.get('/fetchnotes', fetchUser, async (req, res) => {
     try {
         const userId = req.user.id;
         const notes = await Notes.find({ 'user': userId });
-        res.json(notes);
+        return res.json(notes);
     } catch (error) {
         res.status(500).json({ error: "some error occured" });
         console.log(error.message);
@@ -70,7 +70,6 @@ router.put('/updatenote/:id', fetchUser, async (req, res) => {
 //ROUTE 4 delete an existing note
 router.delete('/deletenote/:id', fetchUser, async (req, res) => {
     try {
-
         let note = await Notes.findById(req.params.id);
         if (!note) {
             return res.status(404).json({error: "Not allowed"})

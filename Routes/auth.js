@@ -106,6 +106,7 @@ router.get('/getUser', fetchUser, async (req, res) => {
     let success = false;
     try {
         const userId = req.user.id;
+        // fetch everything other than password
         const user = await User.findOne({ _id: userId }).select("-password");
         success = true;
         res.json({success, user});
