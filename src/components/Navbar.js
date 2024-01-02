@@ -13,6 +13,8 @@ export const Navbar = () => {
 
     const handleLogout= ()=>{
         localStorage.removeItem('token');
+        console.log('loging out')
+        // localStorage.setItem('sed', 'loggingout')
         navigate('/login');
         displayAlert('success', 'Logged-out successfully');
     }
